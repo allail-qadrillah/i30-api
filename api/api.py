@@ -1,10 +1,13 @@
 from holiday.get_holiday import Get_Holiday
 from weather.get_weather import Get_Weather
 import pandas as pd
+from keras.models import load_model
+import numpy as np
 
 
 class API():
     def __init__(self):
+        self.model = "./model/modelv1.h5"
         self.get_holiday_instance = Get_Holiday()
         self.get_weather_instance = Get_Weather()
 
@@ -53,5 +56,14 @@ class API():
             })
 
         return pd.concat([df, pd.DataFrame(data_input)], ignore_index=True)
+    
+    def get_prediction(self, day:int) -> list:
+        """
+        mendapatkan prediksi dari model dengan input hari
+        """
+        model = load_model(self.model)
+        input_data = self.get_input(day)
+
+        return model.predict(input_data)
 
 
