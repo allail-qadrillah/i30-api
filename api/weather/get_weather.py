@@ -1,9 +1,8 @@
-from util.date_range import Date_Range
 import requests
 import sys
-import json
 import os
 from dotenv import load_dotenv
+from ..util.date_range import Date_Range
 
 class Get_Weather(Date_Range):
   

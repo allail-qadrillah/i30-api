@@ -1,8 +1,7 @@
-from holiday.get_holiday import Get_Holiday
-from weather.get_weather import Get_Weather
+from .holiday.get_holiday import Get_Holiday
+from .weather.get_weather import Get_Weather
 import pandas as pd
 from keras.models import load_model
-import numpy as np
 
 
 class API():

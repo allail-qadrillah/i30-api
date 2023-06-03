@@ -1,13 +1,14 @@
 from fastapi import FastAPI, Query
-from api.api import API
-from util.date_range import Date_Range
+from Api.api import API
+from Api.util.date_range import Date_Range
 
 api = API()
 app = FastAPI()
 
 @app.get("/")
 def main():
-    return {"status": "success", "message": "Hello World"}
+    return {"status": "success", 
+            "message": "Bismillah Juara Indonesian International Internet of Things Competition (I30) 2023"}
 
 
 @app.get("/predict")
