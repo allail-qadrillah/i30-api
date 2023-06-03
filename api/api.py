@@ -64,6 +64,6 @@ class API():
         model = load_model(self.model)
         input_data = self.get_input(day)
 
-        return model.predict(input_data)
+        return model.predict(input_data).tolist()
 
 
