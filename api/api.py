@@ -1,8 +1,8 @@
+import onnxruntime
 from .holiday.get_holiday import Get_Holiday
 from .weather.get_weather import Get_Weather
 import pandas as pd
-from keras.models import load_model
-
+import numpy as np
 
 class API():
     def __init__(self):
@@ -39,8 +39,8 @@ class API():
         weathers = self.get_weather_range(count)
 
         df = pd.DataFrame(columns=['temp', 'feelslike', 'libur', 'conditions_Clear',
-                                    'conditions_Overcast', 'conditions_Partially cloudy',
-                                    'conditions_Rain, Overcast', 'conditions_Rain, Partially cloudy'])
+                                   'conditions_Overcast', 'conditions_Partially cloudy',
+                                   'conditions_Rain, Overcast', 'conditions_Rain, Partially cloudy'])
         data_input = []
         for holiday, weather in zip(holidays, weathers):
             data_input.append({
@@ -55,14 +55,21 @@ class API():
             })
 
         return pd.concat([df, pd.DataFrame(data_input)], ignore_index=True)
-    
-    def get_prediction(self, day:int) -> list:
+
+    def get_prediction(self, day: int) -> list:
         """
         mendapatkan prediksi dari model dengan input hari
         """
-        model = load_model(self.model)
-        input_data = self.get_input(day)
 
-        return model.predict(input_data).tolist()
+        session = onnxruntime.InferenceSession('./model/modelv1.onnx')
 
+        # Prepare the input data
+        input_data = np.array(self.get_input(day))
 
+        input_data = input_data.reshape(
+            (len(input_data), 8, 1)).astype(np.float32)
+
+        # Run the model to get predictions
+        input_name = session.get_inputs()[0].name
+        output_name = session.get_outputs()[0].name
+        return session.run([output_name], {input_name: input_data})[0].tolist()
